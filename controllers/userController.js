@@ -116,7 +116,8 @@ const deleteUser = asyncHandler(async (req, res) => {
     const { _id } = req.user;
     validMongooseId(_id);
     try {
-
+        const findUser = await User.findById(_id);
+        if (!findUser) throw new Error("User not found")
         const removeUser = await User.findByIdAndDelete(_id);
         res.status(200).json({
             message: "User Removed Successfully",

@@ -6,11 +6,11 @@ const { jwtAuthMiddleWare, isAdmin } = require('../middleware/jwtAuthMiddleWare'
 
 
 
-router.route("/new").post(jwtAuthMiddleWare, isAdmin, createProduct);
-router.route("/:id").get(getProduct);
-router.route("/").get(allProduct);
-router.route("/update/:id").put(jwtAuthMiddleWare, isAdmin, updateProduct);
-router.route("/delete/:id").delete(jwtAuthMiddleWare, isAdmin, deleteProduct);
+router.route("/product").post(jwtAuthMiddleWare, createProduct);
+router.route("/product/:id").get(jwtAuthMiddleWare, getProduct);
+router.route("/products/all").get(allProduct);
+router.route("/product/update/:id").put(jwtAuthMiddleWare, isAdmin, updateProduct);
+router.route("/product/delete/:id").delete(jwtAuthMiddleWare, isAdmin, deleteProduct);
 
 module.exports = router
 

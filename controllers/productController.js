@@ -40,7 +40,6 @@ const getProduct = asyncHandler(async (req, res) => {
 //Get all products
 const allProduct = asyncHandler(async (req, res) => {
 
-
     try {
         //Filter
         const queryObj = { ...req.query };

@@ -15,9 +15,9 @@ app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use("/api/user", authRoute);
-app.use("/api/product", productRouter);
-app.use("/api/blog", blogRouter);
+app.use("/api/", authRoute);
+app.use("/api/", productRouter);
+app.use("/api/", blogRouter);
 
 
 app.use(notFound);
