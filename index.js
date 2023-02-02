@@ -6,6 +6,10 @@ const port = process.env.PORT || 4000;
 const authRoute = require('./routes/authRoute')
 const productRouter = require('./routes/productRoute');
 const blogRouter = require('./routes/blogRouter')
+const categoryRouter = require('./routes/categoryRouter')
+const blogCategoryRouter = require('./routes/blogCategoryRouter');
+
+
 const bodyParser = require('body-parser')
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser')
@@ -18,6 +22,10 @@ app.use(cookieParser());
 app.use("/api/", authRoute);
 app.use("/api/", productRouter);
 app.use("/api/", blogRouter);
+app.use("/api/", categoryRouter);
+app.use("/api/", blogCategoryRouter);
+
+
 
 
 app.use(notFound);
