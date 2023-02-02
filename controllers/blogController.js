@@ -22,7 +22,7 @@ const getBlog = asyncHandler(async (req, res) => {
     const { id } = req.params;
     validMongooseId(id)
     try {
-        const blog = await Blog.findById(id);
+        const blog = await Blog.findById(id).populate("likes").populate("dislikes");
         if (!blog) throw new Error("Blog not found");
         const updateBlog = await Blog.findByIdAndUpdate(id, {
             $inc: { numviews: 1 }
@@ -86,6 +86,116 @@ const deleteBlog = asyncHandler(async (req, res) => {
 
 });
 
+const likeBlog = asyncHandler(async (req, res) => {
+    const { blogId } = req.body;
+    const userId = req?.user?.id;
+    const blog = await Blog.findById(blogId);
+    const likes = blog?.likes;
+    const dislikes = blog?.dislikes;
+
+    if (likes.length === 0 && dislikes.length === 0) {
+        const likeBlog = await Blog.findByIdAndUpdate(blogId, {
+            $push: { likes: userId },
+            isliked: true,
+            isdisliked: false,
+
+        }, { new: true });
+        return res.status(200).json({
+            success: true,
+            data: likeBlog
+        })
+    }
+    if (dislikes.includes(userId)) {
+        const likeBlog = await Blog.findByIdAndUpdate(blogId, {
+            $pull: { dislikes: userId },
+            $push: { likes: userId },
+            isliked: true,
+            isdisliked: false,
+        }, { new: true });
+        return res.status(200).json({
+            success: true,
+            data: likeBlog
+        })
+    }
+    if (likes.includes(userId)) {
+        const likeBlog = await Blog.findByIdAndUpdate(blogId, {
+            $pull: { likes: userId },
+            isliked: false,
+
+        }, { new: true });
+        return res.status(200).json({
+            success: true,
+            data: likeBlog
+        })
+    }
+    const likeBlog = await Blog.findByIdAndUpdate(blogId, {
+        $push: { likes: userId },
+        isliked: true,
+        isdisliked: false,
+
+    }, { new: true });
+    return res.status(200).json({
+        success: true,
+        data: likeBlog
+    })
+});
+const disLikeBlog = asyncHandler(async (req, res) => {
+
+    const { blogId } = req.body;
+    const userId = req?.user?.id;
+    const blog = await Blog.findById(blogId);
+    const likes = blog?.likes;
+    const dislikes = blog?.dislikes;
+    if (likes.length === 0 && dislikes.length === 0) {
+        const disLikeBlog = await Blog.findByIdAndUpdate(blogId, {
+            $push: { dislikes: userId },
+            isdisliked: true,
+            isliked: false
+        }, { new: true });
+
+        return res.status(200).json({
+            success: true,
+            data: disLikeBlog
+        })
+    }
+    if (likes.includes(userId)) {
+        console.log("first")
+        const disLikeBlog = await Blog.findByIdAndUpdate(blogId, {
+            $pull: { likes: userId },
+            $push: { dislikes: userId },
+            isdisliked: true,
+            isliked: false
+
+        }, { new: true });
+        return res.status(200).json({
+            success: true,
+            data: disLikeBlog
+        })
+    }
+    if (dislikes.includes(userId)) {
+        const disLikeBlog = await Blog.findByIdAndUpdate(blogId, {
+            $pull: { dislikes: userId },
+            isdisliked: false,
+
+        }, { new: true });
+        return res.status(200).json({
+            success: true,
+            data: disLikeBlog
+        })
+    }
+
+    const disLikeBlog = await Blog.findByIdAndUpdate(blogId, {
+        $push: { dislikes: userId },
+        isliked: false,
+        isdisliked: true
+    }, { new: true });
+    return res.status(200).json({
+        success: true,
+        data: disLikeBlog
+    })
+});
+
+
 
 
 module.exports = {
@@ -93,5 +203,7 @@ module.exports = {
     updateBlog,
     getBlog,
     getAllBlog,
-    deleteBlog
+    deleteBlog,
+    likeBlog,
+    disLikeBlog
 };

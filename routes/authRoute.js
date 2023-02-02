@@ -13,8 +13,8 @@ router.route("/user").get(jwtAuthMiddleWare, getIntidualUser);
 router.route("/user/update").put(jwtAuthMiddleWare, updateUser);
 router.route("/user/delete").delete(jwtAuthMiddleWare, deleteUser);
 router.route("/reset").put(jwtAuthMiddleWare, updatePassword);
-router.route("/user/block/:uid").post(jwtAuthMiddleWare, isAdmin, userBlock);
-router.route("/user/unblock/:uid").post(jwtAuthMiddleWare, isAdmin, userUnBlock);
+router.route("/user/block/:uid").put(jwtAuthMiddleWare, isAdmin, userBlock);
+router.route("/user/unblock/:uid").put(jwtAuthMiddleWare, isAdmin, userUnBlock);
 
 
 
