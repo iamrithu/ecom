@@ -8,6 +8,8 @@ const productRouter = require('./routes/productRoute');
 const blogRouter = require('./routes/blogRouter')
 const categoryRouter = require('./routes/categoryRouter')
 const blogCategoryRouter = require('./routes/blogCategoryRouter');
+const brandRouter = require('./routes/brandRouter');
+
 
 
 const bodyParser = require('body-parser')
@@ -24,6 +26,8 @@ app.use("/api/", productRouter);
 app.use("/api/", blogRouter);
 app.use("/api/", categoryRouter);
 app.use("/api/", blogCategoryRouter);
+app.use("/api/", brandRouter);
+
 
 
 

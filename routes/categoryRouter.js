@@ -9,18 +9,6 @@ router.route("/category").get(jwtAuthMiddleWare, getAllCategory);
 router.route("/category/:id").get(jwtAuthMiddleWare, getCategory);
 router.route("/category/update/:id").put(jwtAuthMiddleWare, isAdmin, updateCategory);
 router.route("/category/delete/:id").delete(jwtAuthMiddleWare, isAdmin, deleteCategory);
-
-
-
-
-
-
-
-
-
-
-
-
 module.exports = router
 
 

@@ -1,4 +1,5 @@
 const Product = require('../models/productModel');
+const User = require('../models/userModel');
 const asyncHandler = require('express-async-handler');
 const validMongooseId = require('../utils/validateMongooseId');
 const slugify = require('slugify');
@@ -109,6 +110,8 @@ const updateProduct = asyncHandler(async (req, res) => {
         throw new Error(error);
     }
 });
+
+//Delete Product
 const deleteProduct = asyncHandler(async (req, res) => {
     const { id } = req.params;
     validMongooseId(id);
@@ -128,11 +131,118 @@ const deleteProduct = asyncHandler(async (req, res) => {
     }
 })
 
+//Add product to userWishlist
+const addToWishlist = asyncHandler(async (req, res) => {
+    const { id } = req?.user;
+    const { productId } = req.body;
+    validMongooseId(id);
+    validMongooseId(productId);
+    const product = await Product.findById(productId);
+    if (!product) throw new Error("Product Not Found")
+    try {
+
+        const user = await User.findById(id);
+        const wishlist = user?.wishlist;
+
+        if (wishlist.includes(productId)) {
+            const updateUser = await User.findByIdAndUpdate(id, {
+                $pull: { wishlist: productId }
+            }, { new: true });
+
+            return res.status(200).json({
+                data: updateUser,
+                success: true,
+                msg: "Removed  from  wishlist"
+
+            })
+        }
+        const updateUser = await User.findByIdAndUpdate(id, {
+            $push: { wishlist: productId }
+        }, { new: true });
+
+        return res.status(200).json({
+            data: updateUser,
+            success: true,
+            msg: "Added to wishlist"
+
+        })
+    } catch (error) {
+        throw new Error(error);
+    }
+
+
+});
+
+//Rating
+const addRating = asyncHandler(async (req, res) => {
+    const { _id } = req?.user;
+    const { star } = req?.body;
+    const { productId } = req?.body;
+    validMongooseId(_id);
+    validMongooseId(productId);
+    try {
+        const product = await Product.findById(productId);
+        if (!product) throw new Error("Product Not Found");
+        let rating = product?.rating;
+        let alreadyRated = rating.find(e => e?.postedby.toString() == _id.toString());
+        if (rating.length < 1 || !alreadyRated) {
+            const rateProduct = await Product.findByIdAndUpdate(productId, {
+                $push: {
+                    rating: {
+                        star: star,
+                        postedby: _id
+                    }
+                }
+            }, { new: true });
+            const totalRating = await Product.findById(productId);
+            let totalStar = totalRating.rating.reduce((preview, current) => preview + current.star, 0);
+            const updateTotalRating = await Product.findByIdAndUpdate(productId, {
+                totalrating: Math.round(totalStar / totalRating.rating.length).toString(),
+            }, { new: true });
+            res.status(200).json({
+                data: updateTotalRating,
+                success: true,
+                msg: "Rating added"
+
+            })
+        }
+        const updateRating = await Product.updateOne(
+            {
+                rating: {
+                    $elemMatch: alreadyRated
+                },
+            },
+            {
+                $set: { "rating.$.star": star }
+            },
+            { new: true });
+        const totalRating = await Product.findById(productId);
+        let totalStar = totalRating.rating.reduce((preview, current) => preview + current.star, 0);
+        const updateTotalRating = await Product.findByIdAndUpdate(productId, {
+            totalrating: Math.round(totalStar / totalRating.rating.length).toString(),
+        }, { new: true });
+
+        return res.status(200).json({
+            data: updateTotalRating,
+            success: true,
+            msg: "Rating updated"
+
+        });
+    } catch (error) {
+        throw new Error(error);
+    }
+
+
+
+});
+
 module.exports = {
     createProduct,
     getProduct,
     allProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    addToWishlist,
+    addRating
 }
 

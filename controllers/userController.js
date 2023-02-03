@@ -61,7 +61,7 @@ const loginUser = asyncHandler(async (req, res) => {
 //GET ALL USERS
 const getAllUsers = asyncHandler(async (req, res) => {
     try {
-        const allUsers = await User.find();
+        const allUsers = await User.find().populate("wishlist");
         return res.status(200).json({
             data: allUsers,
             success: true
@@ -71,6 +71,25 @@ const getAllUsers = asyncHandler(async (req, res) => {
             msg: error.message,
             success: false
         });
+    }
+});
+const getIntidualUserforAdmin = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    try {
+        const findUser = await User.findById(id);
+        if (findUser == null) return res.status(404).json({
+            msg: "User Not Found",
+            success: false
+        });
+
+        res.status(200).json({
+            message: "User Available",
+            data: findUser,
+            success: true
+        });
+    } catch (error) {
+        console.log(error);
+        throw new Error(error);
     }
 });
 
@@ -235,6 +254,7 @@ module.exports = {
     loginUser,
     getAllUsers,
     getIntidualUser,
+    getIntidualUserforAdmin,
     deleteUser,
     updateUser,
     userBlock,
