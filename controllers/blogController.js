@@ -2,6 +2,7 @@ const Blog = require("../models/blogModel");
 const asyncHandler = require('express-async-handler');
 const cloudinaryUploadImage = require('../utils/cloudinary');
 const validMongooseId = require("../utils/validateMongooseId");
+const fs = require('fs');
 
 
 //Create blog
@@ -207,6 +208,8 @@ const uploadImage = asyncHandler(async (req, res) => {
             const { path } = file;
             const newPath = await uploader(path);
             url.push(newPath);
+            fs.unlinkSync(path);
+
 
         }
         const blogImage = await Blog.findByIdAndUpdate(id, {
