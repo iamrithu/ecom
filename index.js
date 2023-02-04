@@ -9,6 +9,7 @@ const blogRouter = require('./routes/blogRouter')
 const categoryRouter = require('./routes/categoryRouter')
 const blogCategoryRouter = require('./routes/blogCategoryRouter');
 const brandRouter = require('./routes/brandRouter');
+const couponRouter = require("./routes/couponRouter")
 
 
 
@@ -27,6 +28,7 @@ app.use("/api/", blogRouter);
 app.use("/api/", categoryRouter);
 app.use("/api/", blogCategoryRouter);
 app.use("/api/", brandRouter);
+app.use("/api", couponRouter);
 
 
 

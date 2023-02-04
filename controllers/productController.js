@@ -2,7 +2,9 @@ const Product = require('../models/productModel');
 const User = require('../models/userModel');
 const asyncHandler = require('express-async-handler');
 const validMongooseId = require('../utils/validateMongooseId');
+const cloudinaryUploadImage = require('../utils/cloudinary');
 const slugify = require('slugify');
+const fs = require('fs');
 
 //Create a product
 const createProduct = asyncHandler(async (req, res) => {
@@ -178,6 +180,8 @@ const addRating = asyncHandler(async (req, res) => {
     const { _id } = req?.user;
     const { star } = req?.body;
     const { productId } = req?.body;
+    const { comment } = req?.body;
+
     validMongooseId(_id);
     validMongooseId(productId);
     try {
@@ -190,6 +194,7 @@ const addRating = asyncHandler(async (req, res) => {
                 $push: {
                     rating: {
                         star: star,
+                        comment,
                         postedby: _id
                     }
                 }
@@ -213,7 +218,7 @@ const addRating = asyncHandler(async (req, res) => {
                 },
             },
             {
-                $set: { "rating.$.star": star }
+                $set: { "rating.$.star": star, "rating.$.comment": comment }
             },
             { new: true });
         const totalRating = await Product.findById(productId);
@@ -236,6 +241,35 @@ const addRating = asyncHandler(async (req, res) => {
 
 });
 
+const uploadImage = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    validMongooseId(id);
+    try {
+        const product = await Product.findById(id);
+        if (!product) throw new Error("Product not found");
+        const uploader = (path) => cloudinaryUploadImage(path, "images");
+        const url = [];
+        const files = req.files;
+        for (const file of files) {
+            const { path } = file;
+            const newPath = await uploader(path);
+            url.push(newPath);
+            fs.unlinkSync(path);
+
+        }
+        const prductImages = await Product.findByIdAndUpdate(id, {
+            images: url.map(file => file)
+        }, { new: true });
+
+        res.status(200).json({
+            success: true,
+            data: prductImages
+        })
+    } catch (error) {
+        throw new Error(error);
+    }
+})
+
 module.exports = {
     createProduct,
     getProduct,
@@ -243,6 +277,7 @@ module.exports = {
     updateProduct,
     deleteProduct,
     addToWishlist,
-    addRating
+    addRating,
+    uploadImage
 }
 

@@ -38,10 +38,7 @@ var blogSchema = new mongoose.Schema({
             ref: "User"
         }
     ],
-    image: {
-        type: String,
-        default: "https://www.appliedart.com/assets/images/blog/blogging-SMB.png"
-    },
+    images: [],
     author: {
         type: String,
         default: "Admin"
