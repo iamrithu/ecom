@@ -1,5 +1,6 @@
 
 const User = require("../models/userModel");
+const Product = require('../models/productModel');
 const bcrypt = require('bcrypt')// Erase if already required
 const asyncHandler = require("express-async-handler");
 const validMongooseId = require("../utils/validateMongooseId");
@@ -53,6 +54,35 @@ const loginUser = asyncHandler(async (req, res) => {
         return res.status(200).json({
             message: "Logged in successfully",
             data: { ...findUser._doc, "token": generateToken({ _id: findUser?._id, email: findUser?.email }) },
+            success: true
+        });
+    }
+    throw new Error("Invalid Credencial");
+});
+//Admin login
+const loginAdmin = asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
+    const findAdmin = await User.findOne({ email });
+
+    if (!findAdmin) throw new Error("Invalid email");
+    if (findAdmin?.role !== "admin") throw new Error("You don't have permission to access this");
+    const decryptPassword = await findAdmin.isPasswordMatched(password);
+
+    const refreshtoken = refreshJwtToken({ _id: findAdmin?._id, email: findAdmin?.email });
+    const updateUser = await User.findByIdAndUpdate(findAdmin._id, {
+        refreshToken: refreshtoken,
+    }, {
+        new: true
+    });
+
+    res.cookie("refreshToken", refreshtoken, {
+        httpOnly: true,
+        maxAge: 72 * 60 * 60 * 1000,
+    })
+    if (findAdmin && decryptPassword) {
+        return res.status(200).json({
+            message: "Logged in successfully",
+            data: { ...findAdmin._doc, "token": generateToken({ _id: findAdmin?._id, email: findAdmin?.email }) },
             success: true
         });
     }
@@ -218,6 +248,47 @@ const handleRefreshToken = asyncHandler(async (req, res) => {
 
 });
 
+const addToWishlist = asyncHandler(async (req, res) => {
+    const { id } = req?.user;
+    const { productId } = req.body;
+    validMongooseId(id);
+    validMongooseId(productId);
+    const product = await Product.findById(productId);
+    if (!product) throw new Error("Product Not Found")
+    try {
+
+        const user = await User.findById(id);
+        const wishlist = user?.wishlist;
+
+        if (wishlist.includes(productId)) {
+            const updateUser = await User.findByIdAndUpdate(id, {
+                $pull: { wishlist: productId }
+            }, { new: true });
+
+            return res.status(200).json({
+                data: updateUser,
+                success: true,
+                msg: "Removed  from  wishlist"
+
+            })
+        }
+        const updateUser = await User.findByIdAndUpdate(id, {
+            $push: { wishlist: productId }
+        }, { new: true });
+
+        return res.status(200).json({
+            data: updateUser,
+            success: true,
+            msg: "Added to wishlist"
+
+        })
+    } catch (error) {
+        throw new Error(error);
+    }
+
+
+});
+
 //Logout
 
 const logout = asyncHandler(async (req, res) => {
@@ -261,5 +332,7 @@ module.exports = {
     userUnBlock,
     handleRefreshToken,
     updatePassword,
-    logout
+    logout,
+    loginAdmin,
+    addToWishlist
 };

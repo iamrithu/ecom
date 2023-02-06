@@ -14,7 +14,6 @@ router.route("/product/image/upload/:id").put(jwtAuthMiddleWare, isAdmin, upload
 
 router.route("/product/update/:id").put(jwtAuthMiddleWare, isAdmin, updateProduct);
 router.route("/product/delete/:id").delete(jwtAuthMiddleWare, isAdmin, deleteProduct);
-router.route("/product/wishlist").put(jwtAuthMiddleWare, addToWishlist);
 router.route("/product/rating").put(jwtAuthMiddleWare, addRating);
 
 

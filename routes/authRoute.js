@@ -1,12 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const { createUser, loginUser, getAllUsers, getIntidualUser, deleteUser, updateUser, userBlock, userUnBlock, handleRefreshToken, logout, updatePassword, getIntidualUserforAdmin } = require('../controllers/userController');
+const { createUser, loginUser, getAllUsers, getIntidualUser, deleteUser, updateUser, userBlock, userUnBlock, handleRefreshToken, logout, updatePassword, getIntidualUserforAdmin, loginAdmin, addToWishlist } = require('../controllers/userController');
 const { jwtAuthMiddleWare, isAdmin } = require('../middleware/jwtAuthMiddleWare');
 
 //USER
 router.route("/user/register").post(createUser);
 router.route("/user/login").post(loginUser);
+router.route("/admin/login").post(loginAdmin);
+
 router.route("/user/refresh").get(handleRefreshToken);
+router.route("/user/wishlist").put(jwtAuthMiddleWare, addToWishlist);
+
 router.route("/user/logout").get(logout);
 router.route("/user/all").get(jwtAuthMiddleWare, isAdmin, getAllUsers);
 router.route("/user").get(jwtAuthMiddleWare, getIntidualUser);
