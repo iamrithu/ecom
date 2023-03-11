@@ -21,8 +21,4 @@ router.route("/reset").put(jwtAuthMiddleWare, updatePassword);
 router.route("/user/block/:uid").put(jwtAuthMiddleWare, isAdmin, userBlock);
 router.route("/user/unblock/:uid").put(jwtAuthMiddleWare, isAdmin, userUnBlock);
 
-
-
-
-
 module.exports = router;

@@ -17,7 +17,6 @@ const bodyParser = require('body-parser')
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser')
 const { notFound, errorHandler } = require('./middleware/errorHandler');
-dbConnect();
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -36,6 +35,8 @@ app.use("/api", couponRouter);
 
 app.use(notFound);
 app.use(errorHandler);
+dbConnect();
+
 app.listen(port, () => {
     console.log(`Server is runnig at PORT ${port}`)
 })
