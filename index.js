@@ -21,10 +21,10 @@ app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use("https://ecom-huk49wlvn-iamrithu.vercel.app/", (req, res) => {
+app.use("/", (req, res) => {
     res.send("I Am Working .....")
 })
-app.use(`${process.env.URL}/api/`, authRoute);
+app.use("/api/", authRoute);
 app.use("/api/", productRouter);
 app.use("/api/", blogRouter);
 app.use("/api/", categoryRouter);
