@@ -32,6 +32,7 @@ const uploadPhoto = multer({
 
 
 const productImageResizer = async (req, res, next) => {
+
     if (!req.files)
         return next();
     await Promise.all(

@@ -27,7 +27,7 @@ const getProduct = asyncHandler(async (req, res) => {
     validMongooseId(id);
     try {
         const product = await Product.findById(id).populate("category");
-        if (!product) throw new Error("User Not Found")
+        if (!product) throw new Error("Product Not Found")
         const getproduct = await Product.findById(id);
         return res.status(201).json({
             data: getproduct,
@@ -95,7 +95,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     validMongooseId(id);
     try {
         const product = await Product.findById(id);
-        if (!product) throw new Error("User Not Found")
+        if (!product) throw new Error("Product Not Found")
         if (req.body.title) {
             req.body.slug = slugify(req.body.title);
         }
@@ -118,7 +118,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
     validMongooseId(id);
     try {
         const product = await Product.findById(id);
-        if (!product) throw new Error("User Not Found")
+        if (!product) throw new Error("Product Not Found")
         const deletedProduct = await Product.findByIdAndDelete(id);
         return res.status(200).json({
             data: deletedProduct,
@@ -132,12 +132,12 @@ const deleteProduct = asyncHandler(async (req, res) => {
     }
 })
 
-//Add product to userWishlist
+//Add product to ProductWishlist
 
 
 //Rating
 const addRating = asyncHandler(async (req, res) => {
-    const { _id } = req?.user;
+    const { _id } = req?.Product;
     const { star } = req?.body;
     const { productId } = req?.body;
     const { comment } = req?.body;
