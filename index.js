@@ -21,7 +21,7 @@ app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use("/", (req, res) => {
+app.use("https://ecom-huk49wlvn-iamrithu.vercel.app/", (req, res) => {
     res.send("I Am Working .....")
 })
 app.use(`${process.env.URL}/api/`, authRoute);
