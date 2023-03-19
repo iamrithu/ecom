@@ -21,9 +21,7 @@ app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use("/api", (req, res) => {
-    res.send("I Am Working .....")
-})
+
 app.use("/", authRoute);
 app.use("/", productRouter);
 app.use("/", blogRouter);
