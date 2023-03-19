@@ -1,9 +1,9 @@
 {
     "version": 2,
-    "name": "music-album",
+    "name": "ecom",
     "builds": [
         {
-            "src": "app.js",
+            "src": "index.js",
             "use": "@vercel/node"
         }
     ],
