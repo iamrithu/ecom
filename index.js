@@ -24,13 +24,13 @@ app.use(cookieParser());
 app.use("/api", (req, res) => {
     res.send("I Am Working .....")
 })
-app.use("/api/", authRoute);
-app.use("/api/", productRouter);
-app.use("/api/", blogRouter);
-app.use("/api/", categoryRouter);
-app.use("/api/", blogCategoryRouter);
-app.use("/api/", brandRouter);
-app.use("/api", couponRouter);
+app.use("/", authRoute);
+app.use("/", productRouter);
+app.use("/", blogRouter);
+app.use("/", categoryRouter);
+app.use("/", blogCategoryRouter);
+app.use("/", brandRouter);
+app.use("/", couponRouter);
 
 
 
