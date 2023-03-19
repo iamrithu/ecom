@@ -24,7 +24,7 @@ app.use(cookieParser());
 app.use("/", (req, res) => {
     res.send("I Am Working .....")
 })
-app.use("/api/", authRoute);
+app.use(`${process.env.URL}/api/`, authRoute);
 app.use("/api/", productRouter);
 app.use("/api/", blogRouter);
 app.use("/api/", categoryRouter);
