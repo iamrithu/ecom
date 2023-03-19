@@ -26,7 +26,7 @@ const getProduct = asyncHandler(async (req, res) => {
     const { id } = req.params;
     validMongooseId(id);
     try {
-        const product = await Product.findById(id);
+        const product = await Product.findById(id).populate("category");
         if (!product) throw new Error("User Not Found")
         const getproduct = await Product.findById(id);
         return res.status(201).json({
@@ -49,7 +49,7 @@ const allProduct = asyncHandler(async (req, res) => {
         excludedfields.forEach((e) => delete queryObj[e]);
         let queryStr = JSON.stringify(queryObj);
         queryStr = queryStr.replace(/\b(gte|lte|gt|lt)\b/g, (match) => `$${match}`);
-        let query = Product.find(JSON.parse(queryStr));
+        let query = Product.find(JSON.parse(queryStr)).populate("category");
 
         //Sorting
         if (req.query.sort) {
