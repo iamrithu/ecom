@@ -13,6 +13,11 @@ var brandSchema = new mongoose.Schema({
         required: true,
         lowercase: true,
     },
+    url: {
+        type: String,
+        unique: true,
+        index: true,
+    },
 
 }, {
     timestamps: true

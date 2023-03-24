@@ -8,6 +8,11 @@ var categorySchema = new mongoose.Schema({
         unique: true,
         index: true,
     },
+    url: {
+        type: String,
+        unique: true,
+        index: true,
+    },
     slug: {
         type: String,
         required: true,

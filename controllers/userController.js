@@ -107,7 +107,8 @@ const getAllUsers = asyncHandler(async (req, res) => {
 const getIntidualUserforAdmin = asyncHandler(async (req, res) => {
     const { id } = req.params;
     try {
-        const findUser = await User.findById(id);
+        const findUser = await User.findById(id).populate(
+            "wishlist", "title , slug");
         if (findUser == null) return res.status(404).json({
             msg: "User Not Found",
             success: false

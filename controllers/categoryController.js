@@ -1,16 +1,56 @@
 const Category = require('../models/categoryModel');
 const asyncHandler = require('express-async-handler');
-const slugify = require('slugify');
 const validMongooseId = require('../utils/validateMongooseId');
+const { S3Client, PutObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3');
+const slugify = require('slugify');
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+
 
 //create product category
 
+const bucket_name = process.env.AWSS3_NAME;
+const bucket_region = process.env.AWSS3_REGION;
+const bucket_access_key = process.env.AWSACCESSKEY;
+const bucket_secret_access_key = process.env.AWSACCESSECRETSKEY;
+const RandomImage = (byte = 32) => crypto.randomUUID(byte).toString('hax');
+
+
+
+const s3 = new S3Client({
+    credentials: {
+        accessKeyId: bucket_access_key,
+        secretAccessKey: bucket_secret_access_key
+
+    },
+    region: bucket_region
+})
+
 const createCategory = asyncHandler(async (req, res) => {
+
+    var code = "";
+
+    if (req.file) {
+        code = RandomImage()
+        const params = {
+            Bucket: bucket_name,
+            Key: code,
+            Body: req.file.buffer,
+            ContentType: req.file.mimetype
+        }
+        const command = new PutObjectCommand(params);
+        const data = await s3.send(command);
+
+    }
+
+
+
 
     try {
         if (req.body.title) {
             req.body.slug = slugify(req.body.title);
         }
+        req.body.url = code;
+
         const category = await Category.create(req.body);
         return res.status(201).json({
             success: true,
@@ -27,6 +67,21 @@ const createCategory = asyncHandler(async (req, res) => {
 const getAllCategory = asyncHandler(async (req, res) => {
     try {
         const getAllcategory = await Category.find();
+
+        for (var category of getAllcategory) {
+
+            console.log(category.url)
+            if (category.url && category.url !== "") {
+                const getObjectParams = {
+                    Bucket: bucket_name,
+                    Key: category.url
+                }
+                const command = new GetObjectCommand(getObjectParams);
+                const url = await getSignedUrl(s3, command, { expiresIn: 360000 });
+                category.url = url;
+            }
+
+        }
         return res.status(201).json({
             success: true,
             data: getAllcategory
@@ -44,6 +99,15 @@ const getCategory = asyncHandler(async (req, res) => {
         const category = await Category.findById(id);
         if (!category) throw new Error("Category Not Found")
         const getCategory = await Category.findById(id);
+        if (getCategory.url !== "") {
+            const getObjectParams = {
+                Bucket: bucket_name,
+                Key: getCategory.url
+            }
+            const command = new GetObjectCommand(getObjectParams);
+            const url = await getSignedUrl(s3, command, { expiresIn: 360000 });
+            getCategory.url = url;
+        }
         return res.status(201).json({
             success: true,
             data: getCategory
@@ -60,9 +124,25 @@ const updateCategory = asyncHandler(async (req, res) => {
     try {
         const category = await Category.findById(id);
         if (!category) throw new Error("Category Not Found")
+        console.log(req.file);
         if (req.body.title) {
             req.body.slug = slugify(req.body.title);
         }
+        if (req.file) {
+            if (req.file) {
+                code = RandomImage()
+                const params = {
+                    Bucket: bucket_name,
+                    Key: code,
+                    Body: req.file.buffer,
+                    ContentType: req.file.mimetype
+                }
+                const command = new PutObjectCommand(params);
+                const data = await s3.send(command);
+                req.body.url = code;
+            }
+        }
+
         const updateCategory = await Category.findByIdAndUpdate(id, req.body, { new: true });
         return res.status(201).json({
             success: true,
