@@ -7,10 +7,12 @@ const fs = require('fs');
 
 //Create a product
 const createProduct = asyncHandler(async (req, res) => {
+
     try {
         if (req.body.title) {
             req.body.slug = slugify(req.body.title);
         }
+        req.body.vendor = req.user.id;
         const product = await Product.create(req.body);
         return res.status(201).json({
             data: product,
@@ -50,7 +52,6 @@ const allProduct = asyncHandler(async (req, res) => {
         let queryStr = JSON.stringify(queryObj);
         queryStr = queryStr.replace(/\b(gte|lte|gt|lt)\b/g, (match) => `$${match}`);
         let query = Product.find(JSON.parse(queryStr)).populate("category");
-
         //Sorting
         if (req.query.sort) {
             var querySort = req.query.sort.split(",").join(" ");
@@ -59,9 +60,11 @@ const allProduct = asyncHandler(async (req, res) => {
             query = query.sort("-createdAt");
 
         }
+        console.log(queryObj); 
 
         //Fields
         if (req.query.fields) {
+            console.log(req.query.fields)
             var querySort = req.query.fields.split(",").join(" ");
             query = query.select(querySort);
         } else {

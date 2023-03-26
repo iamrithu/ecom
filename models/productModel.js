@@ -7,6 +7,7 @@ var productSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
+    vendor: { type: mongoose.Schema.Types.ObjectId, ref: "User", require: true, },
     slug: {
         type: String,
         required: true,
@@ -24,7 +25,6 @@ var productSchema = new mongoose.Schema({
     brand: {
         type: String,
         required: true,
-
     },
     size: {
         type: String,

@@ -7,7 +7,7 @@ const { uploadPhoto, productImageResizer, blogImageResizer } = require('../middl
 
 
 
-router.route("/product").post(jwtAuthMiddleWare, createProduct);
+router.route("/product").post(jwtAuthMiddleWare, uploadPhoto.single("image"), createProduct);
 router.route("/product/:id").get(jwtAuthMiddleWare, getProduct);
 router.route("/products/all").get(allProduct);
 router.route("/product/image/upload/:id").put(jwtAuthMiddleWare, isAdmin, uploadPhoto.array("images", 10), productImageResizer, uploadImage);

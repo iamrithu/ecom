@@ -3,6 +3,7 @@ const router = express.Router();
 const { createUser, loginUser, getAllUsers, getIntidualUser, deleteUser, updateUser, userBlock, userUnBlock, handleRefreshToken, logout, updatePassword, getIntidualUserforAdmin, loginAdmin, addToWishlist } = require('../controllers/userController');
 const { jwtAuthMiddleWare, isAdmin } = require('../middleware/jwtAuthMiddleWare');
 
+
 //USER
 router.route("/user/register").post(createUser);
 router.route("/user/login").post(loginUser);
