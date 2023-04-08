@@ -5,15 +5,15 @@ const fs = require("fs");
 
 const multerStorage = multer.memoryStorage();
 
-const multerFilter = (req, file, cb) => {
-    if (file.mimetype.startsWith("image")) {
-        cb(null, true);
-    } else {
-        cb({
-            message: "Only images are allowed!"
-        }, false);
-    }
-}
+// const multerFilter = (req, file, cb) => {
+//     if (file.mimetype.startsWith("image")) {
+//         cb(null, true);
+//     } else {
+//         cb({
+//             message: "Only images are allowed!"
+//         }, false);
+//     }
+// }
 
 const uploadPhoto = multer({
     storage: multerStorage,
