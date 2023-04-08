@@ -17,7 +17,7 @@ const multerFilter = (req, file, cb) => {
 
 const uploadPhoto = multer({
     storage: multerStorage,
-    fileFilter: multerFilter,
+    // fileFilter: multerFilter,
     limits: { fieldSize: 2000000 }
 })
 
