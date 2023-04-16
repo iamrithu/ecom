@@ -4,6 +4,7 @@ const validMongooseId = require('../utils/validateMongooseId');
 const { S3Client, PutObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3');
 const slugify = require('slugify');
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+const crypto=require('crypto') 
 
 
 //create product category
@@ -12,7 +13,7 @@ const bucket_name = process.env.AWSS3_NAME;
 const bucket_region = process.env.AWSS3_REGION;
 const bucket_access_key = process.env.AWSACCESSKEY;
 const bucket_secret_access_key = process.env.AWSACCESSECRETSKEY;
-const RandomImage = (byte = 32) => crypto.randomUUID(byte).toString('hax');
+const RandomImage = (byte) => crypto.randomUUID(byte).toString('hax');
 
 
 
@@ -26,7 +27,7 @@ const s3 = new S3Client({
 })
 
 const createCategory = asyncHandler(async (req, res) => {
-
+console.log(RandomImage());
     var code = "";
 
     if (req.file) {
