@@ -27,7 +27,6 @@ const s3 = new S3Client({
 })
 
 const createCategory = asyncHandler(async (req, res) => {
-console.log(RandomImage());
     var code = "";
 
     if (req.file) {
@@ -42,10 +41,6 @@ console.log(RandomImage());
         const data = await s3.send(command);
 
     }
-
-
-
-
     try {
         if (req.body.title) {
             req.body.slug = slugify(req.body.title);
@@ -160,6 +155,8 @@ const deleteCategory = asyncHandler(async (req, res) => {
     try {
         const category = await Category.findById(id);
         if (!category) throw new Error("Category Not Found")
+
+        console.log(category);
         const deleteCategory = await Category.findByIdAndDelete(id);
         return res.status(201).json({
             success: true,
