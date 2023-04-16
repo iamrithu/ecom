@@ -27,10 +27,9 @@ const s3 = new S3Client({
 })
 
 const createCategory = asyncHandler(async (req, res) => {
-    var code = "";
+    const code =RandomImage();
 
     if (req.file) {
-        code = RandomImage()
         const params = {
             Bucket: bucket_name,
             Key: code,
@@ -46,7 +45,6 @@ const createCategory = asyncHandler(async (req, res) => {
             req.body.slug = slugify(req.body.title);
         }
         req.body.url = code;
-
         const category = await Category.create(req.body);
         return res.status(201).json({
             success: true,
