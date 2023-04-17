@@ -46,7 +46,7 @@ const createCategory = asyncHandler(async (req, res) => {
             success: true,
             // buffer:req.file.buffer,
             // contentType:req.file.mimetype,
-            file:readFile,
+            file:readFile.mimetype,
             data: req.body
         })
     // try {
