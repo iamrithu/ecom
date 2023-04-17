@@ -2,7 +2,7 @@ const Brand = require('../models/brandModel');
 const asyncHandler = require('express-async-handler');
 const slugify = require('slugify');
 const validMongooseId = require('../utils/validateMongooseId');
-
+const crypto=require('crypto');
 const { S3Client, PutObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
@@ -27,10 +27,9 @@ const s3 = new S3Client({
 //create product brand
 
 const createBrand = asyncHandler(async (req, res) => {
-    var code = "";
+    var code = RandomImage();
 
     if (req.file) {
-        code = RandomImage()
         const params = {
             Bucket: bucket_name,
             Key: code,
