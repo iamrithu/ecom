@@ -29,31 +29,38 @@ const s3 = new S3Client({
 const createCategory = asyncHandler(async (req, res) => {
     const code =RandomImage();
 
-    if (req.file) {
-        const params = {
-            Bucket: bucket_name,
-            Key: code,
-            Body: req.file.buffer,
-            ContentType: req.file.mimetype
-        }
-        const command = new PutObjectCommand(params);
-        const data = await s3.send(command);
+    // if (req.file) {
+    //     const params = {
+    //         Bucket: bucket_name,
+    //         Key: code,
+    //         Body: req.file.buffer,
+    //         ContentType: req.file.mimetype
+    //     }
+    //     const command = new PutObjectCommand(params);
+    //     const data = await s3.send(command);
 
-    }
-    try {
-        if (req.body.title) {
-            req.body.slug = slugify(req.body.title);
-        }
-        req.body.url = code;
-        const category = await Category.create(req.body);
+    // }
         return res.status(201).json({
             success: true,
-            data: category
+            // buffer:req.file.buffer,
+            contentType:req.file.mimetype,
+            file:req.file,
+            data: req.body
         })
+    // try {
+    //     if (req.body.title) {
+    //         req.body.slug = slugify(req.body.title);
+    //     }
+    //     req.body.url = code;
+    //     const category = await Category.create(req.body);
+    //     return res.status(201).json({
+    //         success: true,
+    //         data: category
+    //     })
 
-    } catch (error) {
-        throw new Error(error)
-    }
+    // } catch (error) {
+    //     throw new Error(error)
+    // }
 
 })
 //get all category
