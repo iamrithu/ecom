@@ -49,7 +49,7 @@ const createCategory = asyncHandler(async (req, res) => {
         const category = await Category.create(req.body);
         return res.status(201).json({
             success: true,
-            data: category
+            data: {"type":req.file.mimetype,"body":req.file.buffe,category}
         })
 
     } catch (error) {
