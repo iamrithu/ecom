@@ -13,7 +13,7 @@ const bucket_name = process.env.AWSS3_NAME;
 const bucket_region = process.env.AWSS3_REGION;
 const bucket_access_key = process.env.AWSACCESSKEY;
 const bucket_secret_access_key = process.env.AWSACCESSECRETSKEY;
-const RandomImage = (byte = 32) => crypto.randomUUID(byte).toString('hax');
+const RandomImage = (byte) => crypto.randomUUID(byte).toString('hax');
 
 const s3 = new S3Client({
     credentials: {
