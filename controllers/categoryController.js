@@ -29,6 +29,8 @@ const s3 = new S3Client({
 const createCategory = asyncHandler(async (req, res) => {
     const code =RandomImage();
 
+    var readFile=Buffer.from(req.body.image,"base64")
+
     // if (req.file) {
     //     const params = {
     //         Bucket: bucket_name,
@@ -44,7 +46,7 @@ const createCategory = asyncHandler(async (req, res) => {
             success: true,
             // buffer:req.file.buffer,
             // contentType:req.file.mimetype,
-            file:req.body.image,
+            file:readFile,
             data: req.body
         })
     // try {
