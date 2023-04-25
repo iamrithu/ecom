@@ -81,6 +81,10 @@ const deleteBlog = asyncHandler(async (req, res) => {
             data: delBlog
         })
 
+        for(var i=0;i<=2;i++){
+            
+        }
+
     } catch (error) {
         throw new Error(error);
     }
