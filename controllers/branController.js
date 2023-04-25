@@ -150,7 +150,7 @@ const deleteBrand = asyncHandler(async (req, res) => {
     if (!brand) throw new Error("brand Not Found");
     const getObjectParams = {
       Bucket: bucket_name,
-      Key: category.url,
+      Key: brand.url,
     };
     const command = new DeleteObjectCommand(getObjectParams);
     await s3.send(command);
